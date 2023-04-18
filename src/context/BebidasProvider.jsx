@@ -8,9 +8,11 @@ const BebidasProvider = ({ children }) => {
   const [modal, setModal] = useState(false);
   const [bebidaId, setBebidaId] = useState(null);
   const [receta, setReceta] = useState({});
+  const [cargando, setCargando] = useState(false);
 
   useEffect(() => {
     const obtenerReceta = async () => {
+      setCargando(true);
       if (!bebidaId) return;
       try {
         const url = `https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${bebidaId}`;
@@ -18,6 +20,8 @@ const BebidasProvider = ({ children }) => {
         setReceta(data.drinks[0]);
       } catch (error) {
         console.log(error);
+      } finally {
+        setCargando(false);
       }
     };
     obtenerReceta();
@@ -43,10 +47,6 @@ www.thecocktaildb.com/api/json/v1/1/filter.php?i=${datos.nombre}&c=${datos.categ
     setBebidaId(id);
   };
 
-  // useEffect(() => {
-  //   getCategorias();
-  // }, []);
-
   return (
     <BebidasContext.Provider
       value={{
@@ -56,6 +56,7 @@ www.thecocktaildb.com/api/json/v1/1/filter.php?i=${datos.nombre}&c=${datos.categ
         modal,
         handleBebidaIdClick,
         receta,
+        cargando,
       }}>
       {children}
     </BebidasContext.Provider>
